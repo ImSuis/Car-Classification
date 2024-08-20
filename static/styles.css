@@ -72,14 +72,44 @@ body {
     max-width: 100%;
     height: auto;
     margin-top: 50px;
-    /* border-radius: 8px; */
-    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
 }
 
 #results {
-    background-color: #fff; /* Set the background to white */
-    padding: 20px; /* Optional: add some padding for better spacing */
-    border-radius: 8px; /* Optional: round the corners */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Optional: add a subtle shadow for depth */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-bottom: 40px;
+}
+
+#results .car-option-box {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#results .car-option-box h5 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#results .car-option-box a {
+    display: block;
+    font-size: 1.1rem;
+    color: #dc3545;
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+
+#results .car-option-box a:hover {
+    text-decoration: underline;
+}
+
+#results .car-option-box p {
+    margin-bottom: 5px;
+    font-size: 1rem;
 }

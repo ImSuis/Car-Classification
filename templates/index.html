@@ -8,7 +8,6 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Agrandir:wght@400;700&display=swap" rel="stylesheet">
-
 </head>
 
 <body>
@@ -60,28 +59,49 @@
 
       <!-- Results Section -->
       <div id="results" class="container mt-5 d-none">
-          <h2>Classification Results</h2>
-          <div class="row">
-              <div class="col-md-6">
-                  <img id="image-preview" src="" alt="Image Preview" class="img-fluid mb-4">
-              </div>
-              <div class="col-md-6">
-                  <div id="classified-car">
-                      <h4>Classified Car:</h4>
-                      <p id="car-name"></p>
-                      <p id="confidence"></p> 
-                      <p id="car-price"></p>
-                  </div>
-                  <div id="cheapest-car" class="mt-4">
-                      <h4>Cheapest Car Option:</h4>
-                      <a id="cheapest-car-name" href="#" target="_blank">Car Title</a>
-                      <p>Price: <span id="cheapest-car-price"></span></p>
-                      <p>Mileage: <span id="cheapest-car-mileage"></span></p>
-                  </div>
-                  <p id="no-cars-message" class="d-none">No cars available for sale.</p>
-              </div>
-          </div>
-      </div>
+        <h2>Classification Results</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <img id="image-preview" src="" alt="Image Preview" class="img-fluid mb-4">
+            </div>
+            <div class="col-md-6">
+                <div id="classified-car">
+                    <h4>Classified Car:</h4>
+                    <p id="car-name"></p>
+                    <p id="confidence"></p>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="car-option-box">
+                    <!-- <h5>Option 1</h5> -->
+                    <a id="option-1-name" href="#" target="_blank">Car Title</a>
+                    <p>Price: <span id="option-1-price"></span></p>
+                    <p>Mileage: <span id="option-1-mileage"></span></p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="car-option-box">
+                    <!-- <h5>Option 2</h5> -->
+                    <a id="option-2-name" href="#" target="_blank">Car Title</a>
+                    <p>Price: <span id="option-2-price"></span></p>
+                    <p>Mileage: <span id="option-2-mileage"></span></p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="car-option-box">
+                    <!-- <h5>Option 3</h5> -->
+                    <a id="option-3-name" href="#" target="_blank">Car Title</a>
+                    <p>Price: <span id="option-3-price"></span></p>
+                    <p>Mileage: <span id="option-3-mileage"></span></p>
+                </div>
+            </div>
+            
+        </div>
+        <p id="no-cars-message" class="d-none text-center mt-3">No cars available for sale.</p>
+    </div>
+    
   </div> <!-- End of content-wrapper -->
 
   <!-- Footer -->
@@ -94,60 +114,7 @@
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script>
-      $(document).ready(function () {
-          // Handle button click to trigger file input
-          $('#classify-button').click(function () {
-              $('#file-input').click(); // Trigger the file input click event
-          });
-
-          // Handle file input change event
-          $('#file-input').on('change', function (event) {
-              const file = event.target.files[0];
-              if (file) {
-                  var reader = new FileReader();
-                  reader.onload = function (e) {
-                      $('#image-preview').attr('src', e.target.result);
-                  }
-                  reader.readAsDataURL(file);
-
-                  var formData = new FormData($('#upload-form')[0]);
-                  $.ajax({
-                      url: '/',
-                      type: 'POST',
-                      data: formData,
-                      processData: false,
-                      contentType: false,
-                      success: function (response) {
-                        $('#results').removeClass('d-none');
-
-$('#car-name').text(`Car Name: ${response.model_name}`);
-if (response.cheapest_cars && response.cheapest_cars.length > 0) {
-    $('#cheapest-car').empty(); // Clear previous results
-    response.cheapest_cars.forEach((car, index) => {
-        $('#cheapest-car').append(`
-            <div class="car-option mt-3">
-                <h5>Option ${index + 1}:</h5>
-                <a href="${car.URL || '#'}" target="_blank">${car.Name || 'N/A'}</a>
-                <p>Price: $${car.Price || 'N/A'}</p>
-                <p>Mileage: ${car.Mileage || 'N/A'} miles</p>
-            </div>
-        `);
-    });
-    $('#no-cars-message').addClass('d-none');
-} else {
-    $('#cheapest-car').addClass('d-none');
-    $('#no-cars-message').removeClass('d-none');
-}
-                      },
-                      error: function (xhr) {
-                          alert('Error: ' + xhr.responseJSON.error);
-                      }
-                  });
-              }
-          });
-      });
-  </script>
+  <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 
 </html>
