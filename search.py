@@ -19,16 +19,12 @@ def find_cheapest_car(model_name):
         print(f"File {exact_file_name} found.")
         df = read_csv_safe(exact_file_path)
         if not df.empty and {'Name', 'Price', 'URL', 'Mileage'}.issubset(df.columns):
-            # Clean the 'Price' column
             df['Price'] = pd.to_numeric(df['Price'].replace('[\$,]', '', regex=True), errors='coerce')
-            sorted_df = df.sort_values(by='Price')
-            cheapest_car = sorted_df.iloc[0].to_dict()
-            return cheapest_car
+            sorted_df = df.sort_values(by='Price').head(3)  # Get top 3 cheapest cars
+            return sorted_df.to_dict(orient='records')  # Return a list of dictionaries
         else:
             print(f"File {exact_file_path} is empty or does not contain required columns. Columns found: {df.columns.tolist()}")
-            return None
-    else:
-        print(f"File {exact_file_name} not found.")
+            return []
 
     print(f"Searching through all CSV files in the directory for model: {model_name}")
     all_cars = []
@@ -47,20 +43,22 @@ def find_cheapest_car(model_name):
     if all_cars:
         all_cars_df = pd.concat(all_cars, ignore_index=True)
         if not all_cars_df.empty:
-            all_cars_df = all_cars_df.sort_values(by='Price')
-            cheapest_car = all_cars_df.iloc[0].to_dict()
-            return cheapest_car
+            all_cars_df = all_cars_df.sort_values(by='Price').head(3)  # Get top 3 cheapest cars
+            return all_cars_df.to_dict(orient='records')  # Return a list of dictionaries
         else:
             print(f"No cars found for the model {model_name}.")
     else:
         print(f"No cars found for the model {model_name} in any file.")
 
-    return None
+    return []
 
-# Example usage
+
+
 model_name = 'Aston Martin V8 Vantage Coupe 2012'  # Replace with the identified car model
-cheapest_car = find_cheapest_car(model_name)
-if cheapest_car:
-    print(f"The cheapest {model_name} is available for ${cheapest_car['Price']} at {cheapest_car['URL']} with {cheapest_car['Mileage']} miles.")
+cheapest_cars = find_cheapest_car(model_name)
+
+if cheapest_cars:
+    for i, car in enumerate(cheapest_cars, start=1):
+        print(f"{i}. The cheapest {model_name} is available for ${car['Price']} at {car['URL']} with {car['Mileage']} miles.")
 else:
     print(f"No valid cars found for the model {model_name}.")

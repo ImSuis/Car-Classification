@@ -119,19 +119,26 @@
                       processData: false,
                       contentType: false,
                       success: function (response) {
-                          $('#results').removeClass('d-none');
+                        $('#results').removeClass('d-none');
 
-                          $('#car-name').text(`Car Name: ${response.model_name}`);
-                          if (response.cheapest_car) {
-                              $('#cheapest-car-name').attr('href', response.cheapest_car.URL || '#').text(response.cheapest_car.Name || 'N/A');
-                              $('#confidence').text('Confidence: ' + (response.confidence * 100).toFixed(2) + '%'); // Display confidence score
-                              $('#cheapest-car-price').text(`$${response.cheapest_car.Price || 'N/A'}`);
-                              $('#cheapest-car-mileage').text(response.cheapest_car.Mileage || 'N/A');
-                              $('#no-cars-message').addClass('d-none');
-                          } else {
-                              $('#cheapest-car').addClass('d-none');
-                              $('#no-cars-message').removeClass('d-none');
-                          }
+$('#car-name').text(`Car Name: ${response.model_name}`);
+if (response.cheapest_cars && response.cheapest_cars.length > 0) {
+    $('#cheapest-car').empty(); // Clear previous results
+    response.cheapest_cars.forEach((car, index) => {
+        $('#cheapest-car').append(`
+            <div class="car-option mt-3">
+                <h5>Option ${index + 1}:</h5>
+                <a href="${car.URL || '#'}" target="_blank">${car.Name || 'N/A'}</a>
+                <p>Price: $${car.Price || 'N/A'}</p>
+                <p>Mileage: ${car.Mileage || 'N/A'} miles</p>
+            </div>
+        `);
+    });
+    $('#no-cars-message').addClass('d-none');
+} else {
+    $('#cheapest-car').addClass('d-none');
+    $('#no-cars-message').removeClass('d-none');
+}
                       },
                       error: function (xhr) {
                           alert('Error: ' + xhr.responseJSON.error);

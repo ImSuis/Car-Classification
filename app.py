@@ -24,11 +24,11 @@ def index():
             
             class_index, confidence = classify_image(filepath)
             model_name = get_label(class_index)
-            cheapest_car = find_cheapest_car(model_name)
+            cheapest_cars = find_cheapest_car(model_name)
             
             return jsonify({
                 'model_name': model_name,
-                'cheapest_car': cheapest_car,
+                'cheapest_cars': cheapest_cars,  # Send back the list of cheapest cars
                 'confidence': confidence,  # Include the confidence score
                 'filepath': filepath
             })
