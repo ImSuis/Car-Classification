@@ -75,3 +75,11 @@ body {
     /* border-radius: 8px; */
     /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
 }
+
+#results {
+    background-color: #fff; /* Set the background to white */
+    padding: 20px; /* Optional: add some padding for better spacing */
+    border-radius: 8px; /* Optional: round the corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Optional: add a subtle shadow for depth */
+    margin-bottom: 40px;
+}
