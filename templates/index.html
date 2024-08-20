@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Car Classifier</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Agrandir:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+  <div class="content-wrapper">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-light bg-white">
+          <div class="container">
+              <a class="navbar-brand" href="#">
+                  <span class="text-danger font-weight-bold logo-text">FINDMY</span><span class="text-dark font-weight-bold logo-text">CAR</span>
+              </a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                  <ul class="navbar-nav ml-auto">
+                      <li class="nav-item active">
+                          <a class="nav-link" href="#">Home</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="#">About</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="#">Services</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="#">Contact</a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+      </nav>
+
+      <!-- Hero Section -->
+      <div class="hero-section container">
+          <div class="row">
+              <div class="col-md-6 hero-content">
+                  <h1>How great would it be if you could value a car from a photo?</h1>
+                  <p>Upload an image of a classic, and we'll identify and show the cheapest option.</p>
+                  <form id="upload-form" enctype="multipart/form-data">
+                      <input type="file" name="file" id="file-input" class="d-none">
+                      <button type="button" class="btn btn-danger btn-block mt-3" id="classify-button">Upload an Image</button>
+                  </form>
+              </div>
+              <div class="col-md-6 hero-image">
+                  <img src="{{ url_for('static', filename='car.png') }}" alt="Car Image" class="img-fluid">
+              </div>
+          </div>
+      </div>
+
+      <!-- Results Section -->
+      <div id="results" class="container mt-5 d-none">
+          <h2>Classification Results</h2>
+          <div class="row">
+              <div class="col-md-6">
+                  <img id="image-preview" src="" alt="Image Preview" class="img-fluid mb-4">
+              </div>
+              <div class="col-md-6">
+                  <div id="classified-car">
+                      <h4>Classified Car:</h4>
+                      <p id="car-name"></p>
+                      <p id="confidence"></p> 
+                      <p id="car-price"></p>
+                  </div>
+                  <div id="cheapest-car" class="mt-4">
+                      <h4>Cheapest Car Option:</h4>
+                      <a id="cheapest-car-name" href="#" target="_blank">Car Title</a>
+                      <p>Price: <span id="cheapest-car-price"></span></p>
+                      <p>Mileage: <span id="cheapest-car-mileage"></span></p>
+                  </div>
+                  <p id="no-cars-message" class="d-none">No cars available for sale.</p>
+              </div>
+          </div>
+      </div>
+  </div> <!-- End of content-wrapper -->
+
+  <!-- Footer -->
+  <div class="footer">
+      <div class="container">
+          <p>&copy; 2024 FINDMYCAR - All Rights Reserved</p>
+      </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+      $(document).ready(function () {
+          // Handle button click to trigger file input
+          $('#classify-button').click(function () {
+              $('#file-input').click(); // Trigger the file input click event
+          });
+
+          // Handle file input change event
+          $('#file-input').on('change', function (event) {
+              const file = event.target.files[0];
+              if (file) {
+                  var reader = new FileReader();
+                  reader.onload = function (e) {
+                      $('#image-preview').attr('src', e.target.result);
+                  }
+                  reader.readAsDataURL(file);
+
+                  var formData = new FormData($('#upload-form')[0]);
+                  $.ajax({
+                      url: '/',
+                      type: 'POST',
+                      data: formData,
+                      processData: false,
+                      contentType: false,
+                      success: function (response) {
+                          $('#results').removeClass('d-none');
+
+                          $('#car-name').text(`Car Name: ${response.model_name}`);
+                          if (response.cheapest_car) {
+                              $('#cheapest-car-name').attr('href', response.cheapest_car.URL || '#').text(response.cheapest_car.Name || 'N/A');
+                              $('#confidence').text('Confidence: ' + (response.confidence * 100).toFixed(2) + '%'); // Display confidence score
+                              $('#cheapest-car-price').text(`$${response.cheapest_car.Price || 'N/A'}`);
+                              $('#cheapest-car-mileage').text(response.cheapest_car.Mileage || 'N/A');
+                              $('#no-cars-message').addClass('d-none');
+                          } else {
+                              $('#cheapest-car').addClass('d-none');
+                              $('#no-cars-message').removeClass('d-none');
+                          }
+                      },
+                      error: function (xhr) {
+                          alert('Error: ' + xhr.responseJSON.error);
+                      }
+                  });
+              }
+          });
+      });
+  </script>
+</body>
+
+</html>
